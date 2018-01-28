@@ -1,11 +1,13 @@
 const run = require('app-node');
 const express = require('express');
 
+const createDatabase = require('./db');
 const configureRoutes = require('./routes');
 
-run((app) => {
+run(async (app) => {
   app.configure({
     server: express(),
+    db: await createDatabase(),
   });
 
   // Add join data format for posting

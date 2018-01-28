@@ -17,14 +17,16 @@
   },
   "homepage": "https://github.com/syaau/restro-server#readme",
   "devDependencies": {
-    "app-node": "^0.1.6",
     "babel-eslint": "^8.2.1",
     "eslint": "^4.16.0",
     "eslint-config-airbnb-base": "^12.1.0"
   },
   "dependencies": {
+    "app-node": "^0.1.6",
+    "bcrypt": "^1.0.3",
     "eslint-plugin-import": "^2.8.0",
     "express": "^4.16.2",
-    "lowdb": "^1.0.0"
+    "lowdb": "^1.0.0",
+    "md5": "^2.2.1"
   }
 }
