@@ -18,4 +18,5 @@ run(async (app) => {
 
   // Listen to the server port
   app.server.listen(process.env.PORT || 8080);
+  app.logger.info('Server started at port', 8080);
 });
