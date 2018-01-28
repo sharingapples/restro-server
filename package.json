@@ -23,6 +23,7 @@
     "eslint-config-airbnb-base": "^12.1.0"
   },
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "lowdb": "^1.0.0"
   }
 }
