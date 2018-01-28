@@ -1,9 +1,14 @@
+const run = require('app-node');
 const express = require('express');
 
-const app = express();
+run((app) => {
+  app.configure({
+    server: express(),
+  });
 
-// Add join data format for posting
-app.use(express.json());
+  // Add join data format for posting
+  app.server.use(express.json());
 
-
-app.listen(process.env.PORT || 8080);
+  // Listen to the server port
+  app.server.listen(process.env.PORT || 8080);
+});

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/syaau/restro-server#readme",
   "devDependencies": {
+    "app-node": "^0.1.6",
     "babel-eslint": "^8.2.1",
     "eslint": "^4.16.0",
     "eslint-config-airbnb-base": "^12.1.0"
