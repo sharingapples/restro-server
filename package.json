@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/syaau/restro-server/issues"
   },
-  "homepage": "https://github.com/syaau/restro-server#readme"
+  "homepage": "https://github.com/syaau/restro-server#readme",
+  "devDependencies": {
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.16.0",
+    "eslint-config-airbnb-base": "^12.1.0"
+  }
 }
