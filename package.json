@@ -20,5 +20,8 @@
     "babel-eslint": "^8.2.1",
     "eslint": "^4.16.0",
     "eslint-config-airbnb-base": "^12.1.0"
+  },
+  "dependencies": {
+    "express": "^4.16.2"
   }
 }
