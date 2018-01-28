@@ -23,6 +23,7 @@
     "eslint-config-airbnb-base": "^12.1.0"
   },
   "dependencies": {
+    "eslint-plugin-import": "^2.8.0",
     "express": "^4.16.2",
     "lowdb": "^1.0.0"
   }
