@@ -1,3 +1,4 @@
+const shortId = require('shortid');
 const models = require('../../models');
 
 module.exports = function createRoute({ server, db }) {
@@ -24,8 +25,10 @@ module.exports = function createRoute({ server, db }) {
   server.post('/r/:model', (req, res) => {
     const { model } = req.params;
     if (models[model]) {
-      db.get(model).push(req.body).write();
-      res.send('ok');
+      const id = shortId();
+      const record = Object.assign({}, req.body, { id });
+      db.get(model).push(record).write();
+      res.send(record);
     } else {
       res.status(404);
       res.send('Not found');
