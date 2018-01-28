@@ -1,0 +1,19 @@
+{
+  "name": "restro-server",
+  "version": "0.1.0",
+  "description": "Restro Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/syaau/restro-server.git"
+  },
+  "author": "Ranjan Shrestha",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/syaau/restro-server/issues"
+  },
+  "homepage": "https://github.com/syaau/restro-server#readme"
+}
