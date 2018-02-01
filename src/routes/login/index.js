@@ -1,4 +1,6 @@
-module.exports = function createRoute({ server, db }) {
+const uuid = require('uuid/v4');
+
+module.exports = function createRoute({ cache, server, db }) {
   server.post('/login', (req, res) => {
     const { username, password } = req.body;
 
@@ -8,11 +10,13 @@ module.exports = function createRoute({ server, db }) {
       return res.send('Unauthorized');
     }
 
-    // TODO: Validate the username/password
+    const token = uuid();
+    cache.set(token, user);
 
-    // Create a session
-
-
-    return res.send(`OK - ${user.name}`);
+    return res.send(JSON.stringify({
+      role: user.role,
+      name: user.name,
+      token,
+    }));
   });
 };
