@@ -10,15 +10,15 @@ const createSession = require('./createSession');
 const socket = require('socket.red');
 
 run(async (app) => {
-  const httpServer = http.createServer();
-
   const cache = LRU({ max: 500 });
 
   app.configure({
-    server: express()(httpServer),
+    server: express(),
     cache,
     db: await createDatabase(),
   });
+
+  const httpServer = http.createServer(app.server);
 
   app.configure({
     socket: socket({ server: httpServer }, createSession(app), 30000),
