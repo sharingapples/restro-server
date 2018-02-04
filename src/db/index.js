@@ -9,7 +9,7 @@ const MAX_RECORDS = 10000; // The maximum number of records to keep in each mode
 const LIMIT_RECORDS = 5000; // The number of records to keep once max records is reached
 
 const defaultValue = {
-  users: [User.create('super', 'Super User', 'super', 'PImas123*')],
+  users: [User.create('super', 'Super User', 'super', 'super123')],
 };
 
 Object.keys(models).forEach((model) => {

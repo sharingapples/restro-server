@@ -4,7 +4,8 @@
   "description": "Restro Server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm "
   },
   "repository": {
     "type": "git",
@@ -27,7 +28,10 @@
     "eslint-plugin-import": "^2.8.0",
     "express": "^4.16.2",
     "lowdb": "^1.0.0",
+    "lru-cache": "^4.1.1",
     "md5": "^2.2.1",
-    "shortid": "^2.2.8"
+    "shortid": "^2.2.8",
+    "socket.red": "^0.1.7",
+    "uuid": "^3.2.1"
   }
 }
