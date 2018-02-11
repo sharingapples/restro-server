@@ -41,15 +41,19 @@ CREATE INDEX Item_ix_itemTypeId ON Item(itemTypeId);
 -- all the purchase and orders for finding out current stock balance
 CREATE TABLE ItemStock (
   id INTEGER PRIMARY KEY,
+  userId INTEGER NOT NULL,
   itemId INTEGER NOT NULL,
   timestamp INTEGER NOT NULL,
   stock REAL NOT NULL,
 
   -- Constraints
+  CONSTRAINT ItemStock_fk_userId FOREIGN KEY (userId)
+    REFERENCES User(id),
   CONSTRAINT ItemStock_fk_itemId FOREIGN KEY (itemId)
     REFERENCES Item(id)
 );
 
+CREATE INDEX ItemStock_ix_userId ON ItemStock(userId);
 CREATE INDEX ItemStock_ix_itemId ON ItemStock(itemId, timestamp);
 
 CREATE TABLE MenuItem (
@@ -73,15 +77,19 @@ CREATE INDEX MenuItem_ix_itemTypeId ON MenuItem(itemTypeId);
 
 CREATE TABLE Purchase (
   id INTEGER PRIMARY KEY,
+  userId INTEGER INTO NULL,
   itemId INTEGER NULL,
   timestamp INTEGER NOT NULL,
   qty REAL NOT NULL,
 
   -- Constraints
+  CONSTRAINT Purchase_fk_userId FOREIGN KEY (userId)
+    REFERENCES User(id),
   CONSTRAINT Purchase_fk_itemId FOREIGN KEY (itemId)
-    REFERENCES MenuItem(id)
+    REFERENCES Item(id)
 );
 
+CREATE INDEX Purchase_ix_userId ON Purchase(userId);
 CREATE INDEX Purchase_ix_itemId ON Purchase(itemId);
 
 CREATE TABLE [Table] (
@@ -94,6 +102,7 @@ CREATE TABLE [Table] (
 
 CREATE TABLE [Order] (
   id INTEGER PRIMARY KEY,
+  userId INTEGER NOT NULL,
   timestamp INTEGER NOT NULL,
   tableId INTEGER NOT NULL,
   status TEXT NOT NULL,
@@ -101,10 +110,13 @@ CREATE TABLE [Order] (
   remark TEXT,
 
   -- Constraints
+  CONSTRAINT Order_userId FOREIGN KEY (userId)
+    REFERENCES [User](id),
   CONSTRAINT Order_fk_tableId FOREIGN KEY (tableId)
     REFERENCES [Table](id)
 );
 
+CREATE INDEX Order_ix_userId ON [Order](userId);
 CREATE INDEX Order_ix_tableId ON [Order](tableId);
 
 CREATE TABLE OrderItem (
