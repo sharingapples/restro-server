@@ -2,7 +2,6 @@ class ServerApi {
   constructor(db, session, sessions) {
     this.db = db;
     this.session = session;
-
     this.sessions = sessions;
   }
 
