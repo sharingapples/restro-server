@@ -5,9 +5,6 @@ class ServerApi {
     this.sessions = sessions;
   }
 
-  async sum(a, b) {
-    return a+b;
-  }
   async placeOrder(tableNo, orderItems) {
     if (!this.session.isWaiter()) {
       throw new Error('Access Denied');
