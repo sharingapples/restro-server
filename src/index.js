@@ -38,7 +38,9 @@ run(async (app) => {
   app.logger.info('Server started at port', 8080);
 
   app.addExitHandler(() => {
-    console.log('closing http serer');
     httpServer.close();
+
+    // Close database connection
+    app.db.close();
   });
 });
