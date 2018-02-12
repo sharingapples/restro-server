@@ -51,7 +51,8 @@ class DataStructure {
     return res;
   }
 
-  async insert(object) {
+  async insert(obj) {
+    const object = Object.assign({ id: null }, obj);
     const fields = Object.keys(object);
     const values = fields.map(f => object[f]);
 
@@ -59,7 +60,8 @@ class DataStructure {
     const qs = fields.map(() => '?').join(',');
 
     const sql = `INSERT INTO [${this.name}] (${fieldNames}) VALUES(${qs})`;
-    const res = this.db.run(sql, ...values);
+    console.log(sql);
+    const res = await this.db.run(sql, ...values);
 
     const record = Object.assign({}, object, { id: res.lastID });
 
@@ -70,6 +72,10 @@ class DataStructure {
   }
 
   async update(object, id) {
+    if (Object.keys(object).length === 0) {
+      return id;
+    }
+
     const setters = Object.keys(object).map(f => `[${f}]=:${f}`).join(',');
     const values = Object.keys(object).reduce((res, f) => {
       res[`:${f}`] = object[f];

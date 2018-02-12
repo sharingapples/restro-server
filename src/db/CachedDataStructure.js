@@ -23,7 +23,7 @@ class CachedDataStructure extends DataStructure {
   async insert(object) {
     const res = await super.insert(object);
 
-    this.cache.push(res);
+    this.cache[res.id] = res;
     return res;
   }
 
@@ -31,15 +31,19 @@ class CachedDataStructure extends DataStructure {
     const res = await super.update(object, id);
 
     // Replace the record with the update values
-    this.cache.forEach(r => (r.id !== id ? r : Object.assign(r, object)));
+    if (id !== object.id) {
+      const obj = this.cache[id];
+      delete this.cache[id];
+      this.cache[object.id] = Object.assign(obj, object);
+    } else {
+      this.cache[id] = Object.assign(this.cache[id], object);
+    }
     return res;
   }
 
   async delete(id) {
     const res = await super.delete(id);
-    const idx = this.cache.findIndex(r => r.id === id);
-    this.cache.splice(idx, 1);
-
+    delete this.cache[id];
     return res;
   }
 }

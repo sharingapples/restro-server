@@ -31,13 +31,13 @@ module.exports = async function createDatabase() {
   await db.Items.init(async () => {
     const items = await db.all('SELECT * FROM [Item]');
     await Promise.all(items.map(async (item, idx) => {
-      const itemStock = await db.get('SELECT * FROM ItemStock WHERE itemId=? ORDER BY timestamp DESC LIMIT 1', item.id);
+      const itemStock = await db.get('SELECT * FROM [ItemStock] WHERE itemId=? ORDER BY timestamp DESC LIMIT 1', item.id);
       const timestamp = itemStock ? itemStock.timestamp : 0;
       const stock = itemStock ? itemStock.stock : 0;
 
       // Sum up all the purchases and orders that happened after this stock update
       const purchases = await db.get('SELECT SUM(qty) AS qty FROM Purchase WHERE itemId=? AND timestamp > ?', item.id, timestamp);
-      const sales = await db.get('SELECT SUM(OrderItem.qty * MenuItem.qty) as qty FROM OrderItem INNER JOIN MenuItem ON MenuItem.id = OrderItem.menuItemId AND MenuItem.itemId=? INNER JOIN Order ON Order.id = OrderItem.orderId AND Order.timestamp > ?', item.id, timestamp);
+      const sales = await db.get('SELECT SUM(OrderItem.qty * MenuItem.qty) as qty FROM OrderItem INNER JOIN MenuItem ON MenuItem.id = OrderItem.menuItemId AND MenuItem.itemId=? INNER JOIN [Order] ON [Order].id = OrderItem.orderId AND [Order].timestamp > ?', item.id, timestamp);
 
       items[idx].stockTimestamp = timestamp;
       items[idx].stock = (stock + purchases.qty) - sales.qty;

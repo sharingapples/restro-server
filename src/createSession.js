@@ -1,4 +1,4 @@
-const ServerApi = require('./ServerApi');
+const createServerApi = require('./ServerApi');
 
 function flatten(list) {
   return list.reduce((l, r) => l.concat(r), []);
@@ -63,7 +63,7 @@ module.exports = function createSessionFactory(app) {
         });
       },
 
-      onStart: async () => {
+      onStart: () => {
         // Keep track of the session
         sessions[user.role].push(session);
 
@@ -72,17 +72,17 @@ module.exports = function createSessionFactory(app) {
         } = app.db;
 
         // Send all the items, menuItems and active orders
-        await session.populate(ItemTypes);
-        await session.populate(Tables);
-        await session.populate(Items);
-        await session.populate(MenuItems);
-        await session.populate(Orders);
+        session.populate(ItemTypes);
+        session.populate(Tables);
+        session.populate(Items);
+        session.populate(MenuItems);
+        session.populate(Orders);
 
         // Add standard handlers to inform all the sessions whenever something changes
         session.setupListeners(Tables, Items, MenuItems, Orders);
 
         // Return the server api available for the session to be invoked by remote client
-        return new ServerApi(app.db, session, sessions);
+        return createServerApi(app.db, session, sessions);
       },
       onClose: () => {
         // Remove all the listeners

@@ -29,6 +29,7 @@ CREATE TABLE Item (
   name TEXT NOT NULL,
   unit TEXT NOT NULL,
   itemTypeId INTEGER NOT NULL,
+  threshold REAL,
 
   -- Constraints
   CONSTRAINT Item_fk_itemTypeId FOREIGN KEY (itemTypeId)
@@ -62,7 +63,6 @@ CREATE TABLE MenuItem (
   itemTypeId INTEGER NULL, -- Should be null except for custom item type
   name TEXT NOT NULL,
   qty REAL NOT NULL,
-  threshold REAL NULL,  -- Use for stock warning
   price REAL NOT NULL,
 
   -- Constraints
@@ -77,7 +77,7 @@ CREATE INDEX MenuItem_ix_itemTypeId ON MenuItem(itemTypeId);
 
 CREATE TABLE Purchase (
   id INTEGER PRIMARY KEY,
-  userId INTEGER INTO NULL,
+  userId INTEGER NOT NULL,
   itemId INTEGER NULL,
   timestamp INTEGER NOT NULL,
   qty REAL NOT NULL,
@@ -123,7 +123,7 @@ CREATE TABLE OrderItem (
   id INTEGER PRIMARY KEY,
   orderId INTEGER NOT NULL,
   menuItemId INTEGER NOT NULL,
-  orderQty REAL NOT NULL, -- The number of units ordered like 1 or 2 (Using real for some scenario of ordering half)
+  qty REAL NOT NULL, -- The number of units ordered like 1 or 2 (Using real for some scenario of ordering half)
   rate REAL NOT NULL, -- The rate at which the item was billed (by default the one provided in menu item)
 
   -- Constraints
