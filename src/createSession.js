@@ -54,6 +54,7 @@ module.exports = function createSessionFactory(app) {
           }));
 
           unsubscribers.push(ds.addListener('update', (record) => {
+            console.log('update listener called');
             session.dispatch({
               type: 'SCHEMA.UPDATE',
               schema: ds.name,

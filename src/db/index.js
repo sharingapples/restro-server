@@ -18,9 +18,9 @@ module.exports = async function createDatabase() {
   db.Tables = new CachedDataStructure(db, 'Table');
   db.Orders = new CachedDataStructure(db, 'Order');
 
-  db.ItemStocks = new DataStructure(db, 'ItemStock');
-  db.OrderItems = new DataStructure(db, 'OrderItem');
-  db.Purchases = new DataStructure(db, 'Purchase');
+  db.ItemStocks = new DataStructure(db, 'ItemStock', { stock: parseFloat });
+  db.OrderItems = new DataStructure(db, 'OrderItem', { qty: parseFloat });
+  db.Purchases = new DataStructure(db, 'Purchase', { qty: parseFloat });
 
   // Load all the records
   await db.ItemTypes.init();
@@ -46,37 +46,38 @@ module.exports = async function createDatabase() {
     // Whenever an itemStock is added update the stock values
     db.ItemStocks.addListener('insert', (record) => {
       const item = db.Items.get(record.itemId);
-      const prevStock = item.stock;
+      const prevStock = item.stock || 0;
       item.stock = record.stock;
-      db.Items.fireListeners('update', { id: item.id, stock: record.stock }, { id: item.id, stock: prevStock });
+      db.Items.fireListeners('update', { id: item.id, stock: item.stock }, { id: item.id, stock: prevStock });
     });
 
     // For every purchase increase the stock value
     db.Purchases.addListener('insert', (record) => {
       const item = db.Items.get(record.itemId);
-      const prevStock = item.stock;
-      item.stock += record.qty;
-      db.Items.fireListeners('update', { id: item.id, stock: record.stock }, { id: item.id, stock: prevStock });
+
+      const prevStock = item.stock || 0;
+      item.stock = prevStock + record.qty;
+      db.Items.fireListeners('update', { id: item.id, stock: item.stock }, { id: item.id, stock: prevStock });
     });
     db.OrderItems.addListener('insert', (record) => {
       const menuItem = db.Items.get(record.menuItemId);
       if (menuItem.itemId) {
         const item = db.Items.get(menuItem.itemId);
-        const prevStock = item.stock;
-        item.stock -= record.qty * item.qty;
-        db.Items.fireListeners('update', { id: item.id, stock: record.stock }, { id: item.id, stock: prevStock });
+        const prevStock = item.stock || 0;
+        item.stock = prevStock - (record.qty * item.qty);
+        db.Items.fireListeners('update', { id: item.id, stock: item.stock }, { id: item.id, stock: prevStock });
       }
     });
     db.Purchases.addListener('update', (update, original) => {
       // Only if the qty was updated
       if (update.qty !== original.qty || update.itemId !== original.itemId) {
         const originalItem = db.Items.get(original.itemId);
-        const originalStock = originalItem.stock;
+        const originalStock = originalItem.stock || 0;
 
-        originalItem.stock -= original.qty;
+        originalItem.stock = originalStock - original.qty;
         const updateItem = db.Items.get(update.itemId);
-        const updateStock = updateItem.stock;
-        updateItem.stock += update.qty;
+        const updateStock = updateItem.stock || 0;
+        updateItem.stock = updateStock + update.qty;
         db.Items.fireListeners('update', { id: originalItem.id, stock: originalItem.stock }, { id: originalItem.id, stock: originalStock });
         if (update.itemId !== original.itemId) {
           db.Items.fireListeners('update', { id: updateItem.id, stock: updateItem.stock }, { id: updateItem.id, stock: updateStock });
@@ -97,16 +98,16 @@ module.exports = async function createDatabase() {
         // Update original item if available
         if (originalMenuItem.itemId) {
           originalItem = db.Items.get(originalMenuItem.itemId);
-          originalStock = originalItem.stock;
+          originalStock = originalItem.stock || 0;
 
-          originalItem.stock += original.qty * originalMenuItem.qty;
+          originalItem.stock = (originalStock) + (original.qty * originalMenuItem.qty);
         }
 
         // Update the updated item if available
         if (updateMenuItem.itemId) {
           updateItem = db.Items.get(updateItem.itemId);
-          updateStock = updateItem.stock;
-          updateItem.stock -= update.qty * updateMenuItem.qty;
+          updateStock = updateItem.stock || 0;
+          updateItem.stock = (updateStock) - (update.qty * updateMenuItem.qty);
         }
 
         if (originalItem) {

@@ -1,13 +1,29 @@
 class DataStructure {
-  constructor(db, name) {
+  constructor(db, name, parsers = {}) {
     this.db = db;
     this.name = name;
-
+    this.parsers = parsers;
     this.listeners = {
       insert: [],
       update: [],
       delete: [],
     };
+  }
+
+  parseRecord(record) {
+    return Object.keys(record).reduce((res, field) => {
+      res[field] = this.parse(field, record[field]);
+      return res;
+    }, {});
+  }
+
+  parse(field, value) {
+    const parser = this.parsers[field];
+    if (parser) {
+      return parser(value);
+    }
+
+    return value;
   }
 
   addListener(type, listener) {
@@ -21,6 +37,7 @@ class DataStructure {
         list.splice(idx, 1);
       }
     };
+
   }
 
   fireListeners(type, ...args) {
@@ -52,7 +69,7 @@ class DataStructure {
   }
 
   async insert(obj) {
-    const object = Object.assign({ id: null }, obj);
+    const object = this.parseRecord(Object.assign({ id: null }, obj));
     const fields = Object.keys(object);
     const values = fields.map(f => object[f]);
 
@@ -60,7 +77,7 @@ class DataStructure {
     const qs = fields.map(() => '?').join(',');
 
     const sql = `INSERT INTO [${this.name}] (${fieldNames}) VALUES(${qs})`;
-    console.log(sql);
+
     const res = await this.db.run(sql, ...values);
 
     const record = Object.assign({}, object, { id: res.lastID });
@@ -71,14 +88,15 @@ class DataStructure {
     return record;
   }
 
-  async update(object, id) {
-    if (Object.keys(object).length === 0) {
+  async update(obj, id) {
+    if (Object.keys(obj).length === 0) {
       return id;
     }
+    const object = this.parserRecord(obj);
 
     const setters = Object.keys(object).map(f => `[${f}]=:${f}`).join(',');
     const values = Object.keys(object).reduce((res, f) => {
-      res[`:${f}`] = object[f];
+      res[`:${f}`] = this.parser(f, object[f]);
       return res;
     }, { ':sourceId': id });
 
@@ -105,6 +123,11 @@ class DataStructure {
 
     // Fire up all the delete listeners with the original record data
     this.fireListeners('delete', original);
+    return res;
+  }
+
+  async deleteFilter(filter, ...filterArgs) {
+    const res = await this.db.all(`DELETE FROM [${this.name}]${filter ? ` WHERE ${filter}` : ''}`, ...filterArgs);
     return res;
   }
 }
