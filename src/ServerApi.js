@@ -63,7 +63,9 @@ module.exports = function createServerApi(db, session) {
       return true;
     },
 
-    insertTable: async ({ name }) => db.Tables.insert({ name, top: 0, left: 0, angle: 0 }),
+    insertTable: async ({ name }) => db.Tables.insert({
+      name, top: 0, left: 0, angle: 0,
+    }),
     updateTable: async (obj, id) => db.Tables.update(obj, id),
     deleteTable: async id => db.Tables.delete(id),
 
@@ -80,5 +82,6 @@ module.exports = function createServerApi(db, session) {
 
     insertMenuItem: async menuItem => db.MenuItems.insert(menuItem),
     deleteMenuItem: async id => db.MenuItems.delete(id),
+    insertUser: async user => db.Users.insert(user),
   };
 };
