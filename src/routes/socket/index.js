@@ -1,7 +1,8 @@
 module.exports = function createRoute({ cache, server }) {
-  server.post('/validate/:sessionId', async (req, res) => {
+  server.get('/socket/:sessionId', (req, res) => {
+    // Add cross origin policy - required for development mode only
+    res.header('Access-Control-Allow-Origin', '*');
     const { sessionId } = req.params;
-
     const user = cache.get(sessionId);
     if (user) {
       return res.send(JSON.stringify({

@@ -4,7 +4,7 @@ const http = require('http');
 const LRU = require('lru-cache');
 const createDatabase = require('./db');
 const configureRoutes = require('./routes');
-const createSession = require('./createSession');
+const createSession = require('./routes/socket/createSession');
 const socket = require('socket.red');
 
 run(async (app) => {

@@ -1,4 +1,4 @@
-const createServerApi = require('./ServerApi');
+const createServerApi = require('../../ServerApi');
 
 function flatten(list) {
   return list.reduce((l, r) => l.concat(r), []);
@@ -15,7 +15,11 @@ const sessions = {
 
 module.exports = function createSessionFactory(app) {
   return function createSession(url) {
-    const token = url.substr(1);
+    const [, prefix, token] = url.split('/');
+    if (prefix !== 'socket') {
+      return null;
+    }
+
     const user = app.cache.get(token);
 
     if (!user) {
@@ -54,7 +58,6 @@ module.exports = function createSessionFactory(app) {
           }));
 
           unsubscribers.push(ds.addListener('update', (record) => {
-            console.log('update listener called');
             session.dispatch({
               type: 'SCHEMA.UPDATE',
               schema: ds.name,
@@ -67,6 +70,11 @@ module.exports = function createSessionFactory(app) {
       onStart: () => {
         // Keep track of the session
         sessions[user.role].push(session);
+        session.addCloseListener(() => {
+          unsubscribers.forEach(u => u());
+          const idx = sessions[user.role].findIndex(s => s === session);
+          sessions[user.role].splice(idx, 1);
+        });
 
         const {
           ItemTypes, Tables, Items, MenuItems, Orders,
@@ -84,14 +92,6 @@ module.exports = function createSessionFactory(app) {
 
         // Return the server api available for the session to be invoked by remote client
         return createServerApi(app.db, session, sessions);
-      },
-      onClose: () => {
-        // Remove all the listeners
-        unsubscribers.forEach(u => u());
-
-        // Remove the session
-        const idx = sessions[user.role].findIndex(s => s === session);
-        sessions[user.role].splice(idx, 1);
       },
     };
     return session;

@@ -37,7 +37,6 @@ class DataStructure {
         list.splice(idx, 1);
       }
     };
-
   }
 
   fireListeners(type, ...args) {
@@ -53,7 +52,6 @@ class DataStructure {
     }).join(' AND ');
 
     const sql = `SELECT * FROM [${this.name}] WHERE ${condition}`;
-    console.log(sql);
     const res = await this.db.get(sql, args);
     return res;
   }

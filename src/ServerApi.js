@@ -50,7 +50,6 @@ module.exports = function createServerApi(db, session) {
     },
 
     reconcile: async (itemStocks) => {
-      console.log(itemStocks);
       // itemStocks is a list of object with { itemId: id, stock: num }
       itemStocks.forEach((itemStock) => {
         db.ItemStocks.insert({
