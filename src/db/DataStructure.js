@@ -92,11 +92,11 @@ class DataStructure {
     if (Object.keys(obj).length === 0) {
       return id;
     }
-    const object = this.parserRecord(obj);
+    const object = this.parseRecord(obj);
 
     const setters = Object.keys(object).map(f => `[${f}]=:${f}`).join(',');
     const values = Object.keys(object).reduce((res, f) => {
-      res[`:${f}`] = this.parser(f, object[f]);
+      res[`:${f}`] = this.parse(f, object[f]);
       return res;
     }, { ':sourceId': id });
 

@@ -95,6 +95,10 @@ CREATE INDEX Purchase_ix_itemId ON Purchase(itemId);
 CREATE TABLE [Table] (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
+  top INTEGER NOT NULL,
+  left INTEGER NOT NULL,
+  angle INTEGER NOT NULL,
+
 
   -- Constraints
   CONSTRAINT Table_uk_name UNIQUE (name)

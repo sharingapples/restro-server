@@ -64,7 +64,10 @@ module.exports = function createServerApi(db, session) {
       return true;
     },
 
-    insertTable: async table => db.Tables.insert(table),
+    insertTable: async ({ name }) => db.Tables.insert({ name, top: 0, left: 0, angle: 0 }),
+    updateTable: async (obj, id) => db.Tables.update(obj, id),
+    deleteTable: async id => db.Tables.delete(id),
+
     insertItem: async item => db.Items.insert(item),
 
     deleteItem: async id => db.Items.delete(id),
@@ -77,5 +80,6 @@ module.exports = function createServerApi(db, session) {
     updateItem: async (item, id) => db.Items.update(item, id),
 
     insertMenuItem: async menuItem => db.MenuItems.insert(menuItem),
+    deleteMenuItem: async id => db.MenuItems.delete(id),
   };
 };
