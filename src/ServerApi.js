@@ -78,10 +78,12 @@ module.exports = function createServerApi(db, session) {
       userId: session.user.id,
     })),
 
-    updateItem: async (item, id) => db.Items.update(item, id),
+    updateItem: async (item, id) => db.Items.update({ name: item.name, unit: item.unit, itemTypeId: item.itemTypeId, threshold: item.threshold }, id),
 
     insertMenuItem: async menuItem => db.MenuItems.insert(menuItem),
     deleteMenuItem: async id => db.MenuItems.delete(id),
+    updateMenuItem: async (menuItem, id) => db.MenuItems.update(menuItem, id),
+
     insertUser: async user => db.Users.insert(user),
   };
 };
