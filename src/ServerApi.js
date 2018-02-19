@@ -22,9 +22,9 @@ module.exports = function createServerApi(db, session) {
 
         await db.OrderItems.insert({
           orderId: order.id,
-          menuItemId,
-          qty: orderItem.qty,
-          rate: orderItem.rate,
+          menuItemId: parseInt(menuItemId, 10),
+          qty: parseFloat(orderItem.qty),
+          rate: parseFloat(orderItem.rate),
         });
       }));
 
@@ -35,9 +35,9 @@ module.exports = function createServerApi(db, session) {
       await db.OrderItems.deleteFilter('orderId=?', orderId);
       await Promise.all(orderItems.map(orderItem => db.OrderItems.insert({
         orderId,
-        menuItemId: orderItem.menuItemId,
-        qty: orderItem.qty,
-        rate: orderItem.rate,
+        menuItemId: parseInt(orderItem.menuItemId, 10),
+        qty: parseFloat(orderItem.qty),
+        rate: parseFloat(orderItem.rate),
       })));
 
       await db.Orders.update({
