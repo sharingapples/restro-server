@@ -2,6 +2,7 @@ const sqlite = require('sqlite');
 const CachedDataStructure = require('./CachedDataStructure');
 const DataStructure = require('./DataStructure');
 const User = require('./User');
+const Order = require('./Order');
 
 module.exports = async function createDatabase() {
   const db = await sqlite.open('./restro.sqlite.db', { Promise });
@@ -16,7 +17,7 @@ module.exports = async function createDatabase() {
   db.Items = new CachedDataStructure(db, 'Item');
   db.MenuItems = new CachedDataStructure(db, 'MenuItem');
   db.Tables = new CachedDataStructure(db, 'Table');
-  db.Orders = new CachedDataStructure(db, 'Order');
+  db.Orders = new Order(db, 'Order');
 
   db.ItemStocks = new DataStructure(db, 'ItemStock', { stock: parseFloat });
   db.OrderItems = new DataStructure(db, 'OrderItem', { qty: parseFloat });
