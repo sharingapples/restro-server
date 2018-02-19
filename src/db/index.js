@@ -144,7 +144,7 @@ module.exports = async function createDatabase() {
     // Retreive OrderItem for all the orders
     await Promise.all(orders.map(async (order, idx) => {
       const items = await db.all('SELECT * FROM [OrderItem] WHERE orderId=?', order.id);
-      orders[idx].items = items;
+      orders[idx].items = items || [];
     }));
 
     // Listen to insert/delete for the order item records
