@@ -60,11 +60,11 @@ module.exports = async function createDatabase() {
       db.Items.fireListeners('update', { id: item.id, stock: item.stock }, { id: item.id, stock: prevStock });
     });
     db.OrderItems.addListener('insert', (record) => {
-      const menuItem = db.Items.get(record.menuItemId);
+      const menuItem = db.MenuItems.get(record.menuItemId);
       if (menuItem.itemId) {
         const item = db.Items.get(menuItem.itemId);
         const prevStock = item.stock || 0;
-        item.stock = prevStock - (record.qty * item.qty);
+        item.stock = prevStock - (record.qty * menuItem.qty);
         db.Items.fireListeners('update', { id: item.id, stock: item.stock }, { id: item.id, stock: prevStock });
       }
     });
@@ -85,8 +85,8 @@ module.exports = async function createDatabase() {
       }
     });
     db.OrderItems.addListener('update', (update, original) => {
-      const originalMenuItem = db.Items.get(original.menuItemId);
-      const updateMenuItem = db.Items.get(update.menuItemId);
+      const originalMenuItem = db.MenuItems.get(original.menuItemId);
+      const updateMenuItem = db.MenuItems.get(update.menuItemId);
       // Only if the qty is changed or the menu item was changed of the order
       if (update.qty !== original.qty || originalMenuItem !== updateMenuItem) {
         // Need to keep it before check since item can be null for menu item
@@ -151,6 +151,9 @@ module.exports = async function createDatabase() {
     db.OrderItems.addListener('insert', (record) => {
       const order = db.Orders.get(record.orderId);
       if (order) {
+        if (!order.items) {
+          order.items = [];
+        }
         order.items.push(record);
         db.Orders.fireListeners('update', { id: order.id }, { id: order.id });
       }
