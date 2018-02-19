@@ -1,7 +1,7 @@
 module.exports = function createServerApi(db, session) {
   return {
     placeOrder: async (tableId, orderItems, discount = 0, remark = '') => {
-      const orderId = await db.Orders.insert({
+      const order = await db.Orders.insert({
         tableId,
         userId: session.user.id,
         timestamp: Date.now(),
@@ -21,14 +21,14 @@ module.exports = function createServerApi(db, session) {
         }
 
         await db.OrderItems.insert({
-          orderId,
+          orderId: order.id,
           menuItemId,
           qty: orderItem.qty,
           rate: orderItem.rate,
         });
       }));
 
-      return orderId;
+      return order.id;
     },
 
     updateOrder: async (orderId, tableId, orderItems, discount = 0, remark = '') => {
