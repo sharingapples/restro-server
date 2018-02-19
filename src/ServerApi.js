@@ -63,7 +63,12 @@ module.exports = function createServerApi(db, session) {
       return true;
     },
 
-    insertTable: async table => db.Tables.insert(table),
+    insertTable: async ({ name }) => db.Tables.insert({
+      name, top: 0, left: 0, angle: 0,
+    }),
+    updateTable: async (obj, id) => db.Tables.update(obj, id),
+    deleteTable: async id => db.Tables.delete(id),
+
     insertItem: async item => db.Items.insert(item),
 
     deleteItem: async id => db.Items.delete(id),
@@ -73,8 +78,12 @@ module.exports = function createServerApi(db, session) {
       userId: session.user.id,
     })),
 
-    updateItem: async (item, id) => db.Items.update(item, id),
+    updateItem: async (item, id) => db.Items.update({ name: item.name, unit: item.unit, itemTypeId: item.itemTypeId, threshold: item.threshold }, id),
 
     insertMenuItem: async menuItem => db.MenuItems.insert(menuItem),
+    deleteMenuItem: async id => db.MenuItems.delete(id),
+    updateMenuItem: async (menuItem, id) => db.MenuItems.update(menuItem, id),
+
+    insertUser: async user => db.Users.insert(user),
   };
 };
