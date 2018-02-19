@@ -156,7 +156,7 @@ module.exports = async function createDatabase() {
           order.items = [];
         }
         order.items.push(record);
-        db.Orders.fireListeners('update', { id: order.id }, { id: order.id });
+        db.Orders.fireListeners('update', { id: order.id, items: order.items }, { id: order.id });
       }
     });
 
@@ -165,7 +165,7 @@ module.exports = async function createDatabase() {
       if (order) {
         const idx = order.items.findIndex(i => i.id === record.id);
         order.items.splice(idx, 1);
-        db.Orders.fireListeners('update', { id: order.id }, { id: order.id });
+        db.Orders.fireListeners('update', { id: order.id, items: order.items }, { id: order.id });
       }
     });
 
