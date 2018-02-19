@@ -51,14 +51,14 @@ module.exports = function createServerApi(db, session) {
 
     reconcile: async (itemStocks) => {
       // itemStocks is a list of object with { itemId: id, stock: num }
-      itemStocks.forEach((itemStock) => {
+      await Promise.all(itemStocks.map(itemStock => (
         db.ItemStocks.insert({
           itemId: itemStock.itemId,
           stock: itemStock.stock,
           userId: session.user.id,
           timestamp: Date.now(),
-        });
-      });
+        })
+      )));
 
       return true;
     },
@@ -78,7 +78,12 @@ module.exports = function createServerApi(db, session) {
       userId: session.user.id,
     })),
 
-    updateItem: async (item, id) => db.Items.update({ name: item.name, unit: item.unit, itemTypeId: item.itemTypeId, threshold: item.threshold }, id),
+    updateItem: async (item, id) => db.Items.update({
+      name: item.name,
+      unit: item.unit,
+      itemTypeId: item.itemTypeId,
+      threshold: item.threshold,
+    }, id),
 
     insertMenuItem: async menuItem => db.MenuItems.insert(menuItem),
     deleteMenuItem: async id => db.MenuItems.delete(id),
