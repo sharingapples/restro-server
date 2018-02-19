@@ -31,7 +31,7 @@ class CachedDataStructure extends DataStructure {
     const res = await super.update(object, id);
 
     // Replace the record with the update values
-    if (id !== object.id) {
+    if (object.id && id !== object.id) {
       const obj = this.cache[id];
       delete this.cache[id];
       this.cache[object.id] = Object.assign(obj, object);
