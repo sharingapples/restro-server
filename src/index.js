@@ -22,6 +22,7 @@ run(async (app) => {
     app.cache.set('1', user);
   }
 
+  app.server.use(express.static('public'));
   // Add join data format for posting
   app.server.use(express.json());
   const httpServer = http.createServer(app.server);
