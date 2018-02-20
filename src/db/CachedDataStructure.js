@@ -36,7 +36,7 @@ class CachedDataStructure extends DataStructure {
       delete this.cache[id];
       this.cache[object.id] = Object.assign(obj, object);
     } else {
-      this.cache[id] = Object.assign(this.cache[id], object);
+      this.cache[id] = Object.assign({}, this.cache[id], object);
     }
     return res;
   }

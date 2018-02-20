@@ -111,6 +111,8 @@ CREATE TABLE [Order] (
   tableId INTEGER NOT NULL,
   status TEXT NOT NULL,
   discount REAL NOT NULL,
+  serviceCharge INTEGER,
+  vat INTEGER,
   remark TEXT,
 
   -- Constraints
