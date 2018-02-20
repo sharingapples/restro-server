@@ -1,18 +1,23 @@
-module.exports = function createRoute({ server, db }) {
-  server.post('/login', (req, res) => {
-    const { username, password } = req.body;
+const uuid = require('uuid/v4');
 
-    const user = db.get('users').find({ username }).value();
-    if (!user || !db.User.verify(user, password)) {
+module.exports = function createRoute({ cache, server, db }) {
+  server.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    const user = await db.Users.verify(username, password);
+    if (!user) {
       res.status(401);
       return res.send('Unauthorized');
     }
 
-    // TODO: Validate the username/password
+    const token = uuid();
+    cache.set(token, user);
 
-    // Create a session
-
-
-    return res.send(`OK - ${user.name}`);
+    return res.send(JSON.stringify({
+      id: user.id,
+      role: user.role,
+      name: user.name,
+      username: user.username,
+      token,
+    }));
   });
 };
